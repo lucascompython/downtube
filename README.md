@@ -11,4 +11,5 @@ This is a Tauri App with NextJs that downloads and can convert Youtube videos. F
 ## TODO
 
 -   [ ] Add playlist support
+-   [ ] Update the UI with some more information about the video
 -   [ ] Maybe add mobile support with Tauri 2.0

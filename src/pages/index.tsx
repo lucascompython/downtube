@@ -19,13 +19,14 @@ function App() {
             setMsg("Please enter a URL!");
             return;
         }
-        setMsg(
-            `Downloaded: "${await invoke("download", {
-                url: URL,
-                path: path,
-                audio: audio,
-            })}"`
-        );
+        setMsg("Downloading...");
+        const info: object = await invoke("download", {
+            url: URL,
+            path: path,
+            audio: audio,
+        });
+        console.log(info);
+        setMsg(`Downloaded: ${info["title"]}`);
     }
 
     const DirPath = async () => {
