@@ -1,18 +1,51 @@
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+import { open } from "@tauri-apps/api/dialog";
 import Image from "next/image";
-import reactLogo from "../assets/react.svg";
-import tauriLogo from "../assets/tauri.svg";
-import nextLogo from "../assets/next.svg";
+import githubLogo from "../assets/github.svg";
 
 function App() {
-    const [greetMsg, setGreetMsg] = useState("");
-    const [name, setName] = useState("");
+    const [Msg, setMsg] = useState("");
+    const [URL, setURL] = useState("");
+    const [path, setPath] = useState("");
+    const [audio, setAudio] = useState(false);
 
-    async function greet() {
-        // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-        setGreetMsg(await invoke("greet", { name }));
+    async function DownloadVid() {
+        if (!path) {
+            setMsg("Please select a path!");
+            return;
+        }
+        if (!URL) {
+            setMsg("Please enter a URL!");
+            return;
+        }
+        setMsg(
+            `Downloaded: "${await invoke("download", {
+                url: URL,
+                path: path,
+                audio: audio,
+            })}"`
+        );
     }
+
+    const DirPath = async () => {
+        try {
+            const selected = await open({
+                multiple: false,
+                directory: true,
+            });
+            if (typeof selected === "string") {
+                setPath(selected);
+                setMsg(`Path: ${selected}`);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const isAudio = () => {
+        setAudio(!audio);
+    };
 
     return (
         <div className="container">
@@ -20,59 +53,53 @@ function App() {
 
             <div className="row">
                 <span className="logos">
-                    <a href="https://nextjs.org" target="_blank">
+                    <a
+                        href="https://github.com/lucascompython/downtube"
+                        target="_blank"
+                    >
                         <Image
                             width={144}
                             height={144}
-                            src={nextLogo}
+                            src={githubLogo}
                             className="logo next"
-                            alt="Next logo"
-                        />
-                    </a>
-                </span>
-                <span className="logos">
-                    <a href="https://tauri.app" target="_blank">
-                        <Image
-                            width={144}
-                            height={144}
-                            src={tauriLogo}
-                            className="logo tauri"
-                            alt="Tauri logo"
-                        />
-                    </a>
-                </span>
-                <span className="logos">
-                    <a href="https://reactjs.org" target="_blank">
-                        <Image
-                            width={144}
-                            height={144}
-                            src={reactLogo}
-                            className="logo react"
-                            alt="React logo"
+                            alt="Github logo"
                         />
                     </a>
                 </span>
             </div>
 
-            <p>Click on the Tauri, Next, and React logos to learn more.</p>
+            <p>Click on the Github logo to learn more.</p>
 
             <div className="row">
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
-                        greet();
+                        DownloadVid();
                     }}
                 >
+                    <button type="button" onClick={DirPath}>
+                        Path
+                    </button>
                     <input
                         id="greet-input"
-                        onChange={(e) => setName(e.currentTarget.value)}
-                        placeholder="Enter a name..."
+                        onChange={(e) => setURL(e.currentTarget.value)}
+                        placeholder="Enter a Youtube URL..."
                     />
-                    <button type="submit">Greet</button>
+                    <button type="submit">Download</button>
+                    <br />
+                    <label htmlFor="audio">
+                        Audio:
+                        <input
+                            className="checkbox"
+                            type="checkbox"
+                            name="audio"
+                            onClick={isAudio}
+                        />
+                    </label>
                 </form>
             </div>
 
-            <p>{greetMsg}</p>
+            <p>{Msg}</p>
         </div>
     );
 }
