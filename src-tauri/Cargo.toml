@@ -1,10 +1,10 @@
 [package]
 name = "downtube"
 version = "0.0.0"
-description = "A Tauri App"
+description = "A Youtube Downloader"
 authors = ["you"]
-license = ""
-repository = ""
+license = "GPL-3.0"
+repository = "https://github.com/lucascompython/downtube"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -26,3 +26,11 @@ default = ["custom-protocol"]
 # this feature is used used for production builds where `devPath` points to the filesystem
 # DO NOT remove this
 custom-protocol = ["tauri/custom-protocol"]
+
+[profile.release]
+panic = "abort" # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true # Enables link to optimizations
+opt-level = "s" # Optimize for binary size
+strip = true # Remove debug symbols
+
