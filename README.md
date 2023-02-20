@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a Tauri App with NextJs that downloads and can convert Youtube videos. For that it uses [yt-dlp](https://github.com/yt-dlp/yt-dlp) and [youtube-dl-rs](https://github.com/yt-dlp/yt-dlp)
+This is a Tauri App with NextJs that downloads and can convert Youtube videos. For that it uses [yt-dlp](https://github.com/yt-dlp/yt-dlp) and [youtube-dl-rs](https://github.com/GyrosOfWar/youtube-dl-rs)
 
 ## Preview
 
