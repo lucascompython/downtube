@@ -8,8 +8,16 @@ This is a Tauri App with NextJs that downloads and can convert Youtube videos. F
 
 ![Preview](https://cdn.discordapp.com/attachments/626449728988774401/1077232713532186725/image.png)
 
+## Build It
+
+```bash
+git clone https://github.com/lucascompython/downtube.git
+cd downtube
+./build.py -h
+```
+
 ## TODO
 
--   [ ] Add playlist support
--   [ ] Update the UI with some more information about the video
--   [ ] Maybe add mobile support with Tauri 2.0
+- [ ] Add playlist support
+- [ ] Update the UI with some more information about the video
+- [ ] Maybe add mobile support with Tauri 2.0
