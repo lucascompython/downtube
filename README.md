@@ -22,3 +22,4 @@ cd downtube
 - [ ] Update the UI with some more information about the video
 - [ ] Remove build.py and use build.rs (didn't know about it)
 - [ ] Maybe add mobile support with Tauri 2.0
+- [ ] Replace yt-dlp and ffmpeg
