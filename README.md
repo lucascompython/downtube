@@ -2,8 +2,8 @@
 
 ## Description
 
-This is a Tauri App with NextJs that downloads and can convert Youtube videos. For that it uses [yt-dlp](https://github.com/yt-dlp/yt-dlp) and [youtube-dl-rs](https://github.com/GyrosOfWar/youtube-dl-rs).  
-The app it-self only takes about 3mb of space but it depends on yt-dlp(~13mb), ffmpeg(~70mb) and ffprob(~70) and in total it takes around 166mb, which is a lot, looking on replacing the depencies.
+This is a Tauri App with a NextJs frontend that downloads and can convert Youtube videos.  
+There are two versions of the app, one that has the [LOCAL](client/src-tauri-local/src/main.rs) dependencies that takes approximately 160mb of space and another that works with a [SERVER](client/src-tauri-server/src/main.rs) that has the dependencies, so no depencies in the client, approximately 3mb of space.
 
 ## Preview
 
@@ -19,9 +19,6 @@ cd downtube
 
 ## TODO
 
-- [ ] Remove the use of almost useless crate, which is youtube-dl-rs
-- [ ] Add playlist support
 - [ ] Update the UI with some more information about the video
-- [ ] Remove build.py and use build.rs (didn't know about it)
+- [ ] Add playlist support
 - [ ] Maybe add mobile support with Tauri 2.0
-- [ ] Replace yt-dlp and ffmpeg

@@ -20,7 +20,7 @@ function App() {
             return;
         }
         setMsg("Downloading...");
-        const info: object = await invoke("download", {
+        const info: any = await invoke("download", {
             url: URL,
             path: path,
             audio: audio,

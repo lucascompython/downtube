@@ -1,14 +1,14 @@
 {
     "build": {
-        "beforeDevCommand": "pnpm dev",
-        "beforeBuildCommand": "pnpm build",
+        "beforeDevCommand": "cd src-frontend ; pnpm dev",
+        "beforeBuildCommand": "cd src-frontend ; pnpm build",
         "devPath": "http://localhost:1420",
         "distDir": "../dist",
         "withGlobalTauri": false
     },
     "package": {
         "productName": "downtube",
-        "version": "0.0.0"
+        "version": "0.1.0"
     },
     "tauri": {
         "allowlist": {

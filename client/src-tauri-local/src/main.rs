@@ -20,7 +20,7 @@ async fn download(url: &str, path: &str, audio: bool) -> Result<HashMap<&'static
             .extra_arg("mp3");
     } else {
         output = output
-            .format("bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio")
+            .format("bestvideo+bestaudio/best")
             .extra_arg("--merge-output-format")
             .extra_arg("mp4");
     }

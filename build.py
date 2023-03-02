@@ -66,6 +66,10 @@ def arg_parser() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build the app")
     parser.add_argument("-r", "--release", action="store_true", help="Build the app in release mode")
     parser.add_argument("-d", "--dev", action="store_true", help="Build the app in development mode")
+    parser.add_argument("-s", "--server", action="store_true", help="Build the app with the data fetching from the server so with no dependencies")
+    parser.add_argument("-l", "--local", action="store_true", help="Build the app with the data fetching from the local dependencies (yt-dlp and ffmpeg/ffprobe/ffplay ~150mb)")
+    parser.add_argument("-v", "--version", action="version", version="downtube v0.1.0")
+    
 
     return parser.parse_args()
 
@@ -78,63 +82,86 @@ async def main(args: argparse.Namespace):
         print("You must specify either the release or development mode")
         exit(1)
     
+    if args.server and args.local:
+        print("You can't build the app with both the server and local dependencies")
+        exit(1)
+    
+    if not args.server and not args.local:
+        print("You must specify either the server or local dependencies")
+        exit(1)
+    
 
-    with open("./src-tauri/tauri.conf.json", "r") as f:
+    tauri_path = "./client/src-tauri-local" if args.local else "./client/src-tauri-server"
+
+    
+    with open(f"{tauri_path}/tauri.conf.json", "r") as f:
         tauri_config = json.load(f)
-    external_bin = tauri_config["tauri"]["bundle"]["externalBin"]
+    if args.local:
 
-    match OS:
-        case "linux" | "linux2": # admiting that all linux distros come with python3 and ffmpeg installed 
-            import importlib.util
+        external_bin = tauri_config["tauri"]["bundle"]["externalBin"]
 
-            if importlib.util.find_spec("yt_dlp"):
-                print("yt-dlp is already installed")
-            else:
-                print("Installing yt-dlp")
-                subprocess.run([sys.executable, "-m", "pip", "install", "yt-dlp"])
-                print("yt-dlp installed")
-            
-            # if any files are embedded, remove them
-            if external_bin:
-                print("Removing embedded files...")
-                external_bin.clear()
-                with open("./src-tauri/tauri.conf.json", "w") as f:
-                    json.dump(tauri_config, f, indent=4)
-            
-                
+        match OS:
+            case "linux" | "linux2": # admiting that all linux distros come with python3 and ffmpeg installed 
+                import importlib.util
 
-        case "win32" | "darwin":
-            print(f"{OS} does not come with python3 pre-installed thus embedding yt-dlp in the executable...")
-            suffix = "-x86_64-pc-windows-msvc.exe" if OS == "win32" else "-x86_64-apple-darwin"
-            ext = ".exe" if OS == "win32" else "_macos"
-
-            async with aiohttp.ClientSession() as session:
-
-                await download_dependencies(session, suffix, ext)
-
-
-                
-                if "../yt-dlp" in external_bin:
-                    print("yt-dlp is already set to be embedded!")
+                if importlib.util.find_spec("yt_dlp"):
+                    print("yt-dlp is already installed")
                 else:
-                    external_bin.append(f"../yt-dlp")
-                if "../ffmpeg/*" in external_bin:
-                    print("ffmpeg is already set to be embedded!")
-                else:
-                    external_bin.append("../ffmpeg/*")
+                    print("Installing yt-dlp")
+                    subprocess.run([sys.executable, "-m", "pip", "install", "yt-dlp"])
+                    print("yt-dlp installed")
+                
+                # if any files are embedded, remove them
+                if external_bin:
+                    print("Removing embedded files...")
+                    external_bin.clear()
+                    with open("./src-tauri/tauri.conf.json", "w") as f:
+                        json.dump(tauri_config, f, indent=4)
+                
+                    
+
+            case "win32" | "darwin":
+                print(f"{OS} does not come with python3 pre-installed thus embedding yt-dlp in the executable...")
+                suffix = "-x86_64-pc-windows-msvc.exe" if OS == "win32" else "-x86_64-apple-darwin"
+                ext = ".exe" if OS == "win32" else "_macos"
+
+                async with aiohttp.ClientSession() as session:
+
+                    await download_dependencies(session, suffix, ext)
 
 
-                with open("./src-tauri/tauri.conf.json", "w") as f:
-                    json.dump(tauri_config, f, indent=4)
-        case _:
-            print(f"Unsupported OS: {OS}")
-            exit(1)
+                    
+                    if "../yt-dlp" in external_bin:
+                        print("yt-dlp is already set to be embedded!")
+                    else:
+                        external_bin.append(f"../yt-dlp")
+                    if "../ffmpeg/*" in external_bin:
+                        print("ffmpeg is already set to be embedded!")
+                    else:
+                        external_bin.append("../ffmpeg/*")
+
+
+                    with open("./src-tauri/tauri.conf.json", "w") as f:
+                        json.dump(tauri_config, f, indent=4)
+            case _:
+                print(f"Unsupported OS: {OS}")
+                exit(1)
+    elif args.server:
+        ip = input("Enter the ip and port of the server (e.g. 0.0.0.0:6969) ")
+        if not ip:
+            print("Defaulting to 0.0.0.0:6969")
+            ip = "0.0.0.0:6969"
+        ip = "http://" + ip
+        with open(f"{tauri_path}/appsettings.json", "w") as f:
+            json.dump({"ip": ip}, f, indent=4)
+        
+
 
     print("Building the app...")
     if args.release:
-        subprocess.run(["pnpm", "tauri", "build"], shell=True if OS == "win32" else False) # for some reason, on windows pnpm isn't found
+        subprocess.run(["cargo", "tauri", "build"], cwd=tauri_path)
     elif args.dev:
-        subprocess.run(["pnpm", "tauri", "dev"], shell=True if OS == "win32" else False) 
+        subprocess.run(["cargo", "tauri", "dev"], cwd=tauri_path) 
 
     else:
         print("Something went wrong")

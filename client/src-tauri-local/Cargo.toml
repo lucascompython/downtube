@@ -1,0 +1,36 @@
+[package]
+name = "downtube"
+version = "0.1.0"
+description = "A Youtube Downloader"
+authors = ["you"]
+license = "GPL-3.0"
+repository = "https://github.com/lucascompython/downtube"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1.2", features = [] }
+
+[dependencies]
+serde_json = "1.0.93"
+serde = { version = "1.0.152", features = ["derive"] }
+tauri = { version = "1.2.4", features = ["dialog-open", "shell-open"] }
+tokio = { version = "1.25.0", features = ["full"] }
+youtube_dl = { version = "0.8.0", features = ["tokio"] }
+
+[features]
+# by default Tauri runs in production mode
+# when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
+default = ["custom-protocol"]
+# this feature is used used for production builds where `devPath` points to the filesystem
+# DO NOT remove this
+custom-protocol = ["tauri/custom-protocol"]
+
+[profile.release]
+panic = "abort" # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true # Enables link to optimizations
+opt-level = "s" # Optimize for binary size
+strip = true # Remove debug symbols
+
