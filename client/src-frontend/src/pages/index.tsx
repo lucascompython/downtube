@@ -19,6 +19,9 @@ function App() {
             setMsg("Please enter a URL!");
             return;
         }
+        if (Msg === "Downloading...") 
+            return;
+        
         setMsg("Downloading...");
         const info: any = await invoke("download", {
             url: URL,
