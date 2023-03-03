@@ -12,7 +12,7 @@ use youtube_dl::YoutubeDl;
 async fn download(url: &str, path: &str, audio: bool) -> Result<HashMap<&'static str, String>, ()> {
     let mut output = YoutubeDl::new(url);
 
-    let mut output = output.download(true).output_directory(path);
+    let mut output = output.download(true).output_directory(path).output_template("%(title)s.%(ext)s");
     if audio {
         output = output
             .extract_audio(true)
@@ -20,7 +20,7 @@ async fn download(url: &str, path: &str, audio: bool) -> Result<HashMap<&'static
             .extra_arg("mp3");
     } else {
         output = output
-            .format("bestvideo+bestaudio/best")
+            .format("bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio")
             .extra_arg("--merge-output-format")
             .extra_arg("mp4");
     }

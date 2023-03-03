@@ -1,7 +1,7 @@
 {
     "build": {
-        "beforeDevCommand": "cd src-frontend ; pnpm dev",
-        "beforeBuildCommand": "cd src-frontend ; pnpm build",
+        "beforeDevCommand": "cd src-frontend && pnpm dev",
+        "beforeBuildCommand": "cd src-frontend && pnpm build",
         "devPath": "http://localhost:1420",
         "distDir": "../dist",
         "withGlobalTauri": false

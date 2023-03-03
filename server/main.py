@@ -61,15 +61,5 @@ async def info(vid_id: str, audio: bool = False):
     return JSONResponse(video_info_cache[vid_id])
 
 
-@app.get("/")
-def root():
-    return {"message": "Hello World"}
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
-
-
-
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=PORT, log_level="info")

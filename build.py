@@ -73,6 +73,15 @@ def arg_parser() -> argparse.Namespace:
 
     return parser.parse_args()
 
+
+def check_node_modules():
+    if not os.path.isdir("./client/src-frontend/node_modules"):
+        print("node_modules not found, installing...")
+        subprocess.run(["pnpm", "i"], cwd="./client/src-frontend", shell=True if OS == "win32" else False)
+        print("node_modules installed!")
+    else:
+        print("node_modules found, skipping install")
+
 async def main(args: argparse.Namespace):
     if args.release and args.dev:
         print("You can't build the app in both release and development mode")
@@ -89,6 +98,8 @@ async def main(args: argparse.Namespace):
     if not args.server and not args.local:
         print("You must specify either the server or local dependencies")
         exit(1)
+    
+    check_node_modules()
     
 
     tauri_path = "./client/src-tauri-local" if args.local else "./client/src-tauri-server"
@@ -131,17 +142,17 @@ async def main(args: argparse.Namespace):
 
 
                     
-                    if "../yt-dlp" in external_bin:
+                    if "../../yt-dlp" in external_bin:
                         print("yt-dlp is already set to be embedded!")
                     else:
-                        external_bin.append(f"../yt-dlp")
-                    if "../ffmpeg/*" in external_bin:
+                        external_bin.append(f"../../yt-dlp")
+                    if "../../ffmpeg/*" in external_bin:
                         print("ffmpeg is already set to be embedded!")
                     else:
-                        external_bin.append("../ffmpeg/*")
+                        external_bin.append("../../ffmpeg/*")
 
 
-                    with open("./src-tauri/tauri.conf.json", "w") as f:
+                    with open(f"{tauri_path}/tauri.conf.json", "w") as f:
                         json.dump(tauri_config, f, indent=4)
             case _:
                 print(f"Unsupported OS: {OS}")
@@ -159,9 +170,9 @@ async def main(args: argparse.Namespace):
 
     print("Building the app...")
     if args.release:
-        subprocess.run(["cargo", "tauri", "build"], cwd=tauri_path)
+        subprocess.run(["cargo", "tauri", "build"], cwd=tauri_path, shell=True if OS == "win32" else False)
     elif args.dev:
-        subprocess.run(["cargo", "tauri", "dev"], cwd=tauri_path) 
+        subprocess.run(["cargo", "tauri", "dev"], cwd=tauri_path, shell=True if OS == "win32" else False) 
 
     else:
         print("Something went wrong")

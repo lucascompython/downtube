@@ -8,6 +8,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::fs::rename;
 use std::io::Write;
+use std::path::Path;
 
 #[derive(Deserialize)]
 struct DislikesResponse {
@@ -54,9 +55,12 @@ async fn get_info(
 
 fn rename_file(path: &str, name: &str, audio: bool, vid_id: &str) {
     let ext = if audio { ".mp3" } else { ".mp4" };
+    let temp_path = Path::new(path).join(".temp".to_owned() + vid_id + ext);
+    let name = name.replace('"', "");
+    let new_path = Path::new(path).join(name.to_owned() + ext);
     rename(
-        path.to_string() + "/.temp" + vid_id + ext,
-        path.to_string() + "/" + name + ext,
+        temp_path,
+        new_path
     )
     .expect("Failed to rename file");
 }
