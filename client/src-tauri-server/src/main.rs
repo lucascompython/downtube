@@ -58,11 +58,7 @@ fn rename_file(path: &str, name: &str, audio: bool, vid_id: &str) {
     let temp_path = Path::new(path).join(".temp".to_owned() + vid_id + ext);
     let name = name.replace('"', "");
     let new_path = Path::new(path).join(name.to_owned() + ext);
-    rename(
-        temp_path,
-        new_path
-    )
-    .expect("Failed to rename file");
+    rename(temp_path, new_path).expect("Failed to rename file");
 }
 
 #[tauri::command]

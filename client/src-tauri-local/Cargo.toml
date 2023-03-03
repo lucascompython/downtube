@@ -18,6 +18,7 @@ serde = { version = "1.0.152", features = ["derive"] }
 tauri = { version = "1.2.4", features = ["dialog-open", "shell-open"] }
 tokio = { version = "1.25.0", features = ["full"] }
 youtube_dl = { version = "0.8.0", features = ["tokio"] }
+reqwest = { version = "0.11", features = ["json"] }
 
 [features]
 # by default Tauri runs in production mode

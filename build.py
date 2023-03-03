@@ -82,6 +82,14 @@ def check_node_modules():
     else:
         print("node_modules found, skipping install")
 
+def check_dist():
+    if not os.path.isdir("./client/dist"):
+        print("dist not found, building...")
+        os.mkdir("./client/dist")
+        print("dist built!")
+    else:
+        print("dist found, skipping build")
+
 async def main(args: argparse.Namespace):
     if args.release and args.dev:
         print("You can't build the app in both release and development mode")
@@ -100,6 +108,7 @@ async def main(args: argparse.Namespace):
         exit(1)
     
     check_node_modules()
+    check_dist()
     
 
     tauri_path = "./client/src-tauri-local" if args.local else "./client/src-tauri-server"
