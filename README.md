@@ -16,7 +16,7 @@ Didn't test anything on Mac.
 ```bash
 git clone https://github.com/lucascompython/downtube.git
 cd downtube
-./build.py -h
+python3 build.py -h
 ```
 
 ## TODO
