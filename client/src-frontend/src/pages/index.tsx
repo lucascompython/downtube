@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { open } from "@tauri-apps/api/dialog";
 import Image from "next/image";
 import githubLogo from "../assets/github.svg";
+import { YoutubePlayer, EmptyPlayer } from "../components/YoutubePlayer";
 
 function App() {
     const [Msg, setMsg] = useState("");
@@ -19,9 +20,8 @@ function App() {
             setMsg("Please enter a URL!");
             return;
         }
-        if (Msg === "Downloading...") 
-            return;
-        
+        if (Msg === "Downloading...") return;
+
         setMsg("Downloading...");
         const info: any = await invoke("download", {
             url: URL,
@@ -53,27 +53,13 @@ function App() {
 
     return (
         <div className="container">
-            <h1>Welcome to DownTube!</h1>
+            <h1>Downtube</h1>
 
-            <div className="row">
-                <span className="logos">
-                    <a
-                        href="https://github.com/lucascompython/downtube"
-                        target="_blank"
-                    >
-                        <Image
-                            width={144}
-                            height={144}
-                            src={githubLogo}
-                            className="logo next"
-                            alt="Github logo"
-                        />
-                    </a>
-                </span>
-            </div>
-
-            <p>Click on the Github logo to learn more.</p>
-
+            {URL.length === 43 ? (
+                <YoutubePlayer vidId={URL.split("v=")[1]} />
+            ) : (
+                <EmptyPlayer />
+            )}
             <div className="row">
                 <form
                     onSubmit={(e) => {
@@ -92,7 +78,7 @@ function App() {
                     <button type="submit">Download</button>
                     <br />
                     <label htmlFor="audio">
-                        Audio:
+                        Only Audio:
                         <input
                             className="checkbox"
                             type="checkbox"
@@ -104,6 +90,23 @@ function App() {
             </div>
 
             <p>{Msg}</p>
+
+            <div className="row">
+                <span className="logos">
+                    <a
+                        href="https://github.com/lucascompython/downtube"
+                        target="_blank"
+                    >
+                        <Image
+                            width={144}
+                            height={144}
+                            src={githubLogo}
+                            className="logo next"
+                            alt="Github logo"
+                        />
+                    </a>
+                </span>
+            </div>
         </div>
     );
 }
