@@ -3,7 +3,10 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { open } from "@tauri-apps/api/dialog";
 import Image from "next/image";
 import githubLogo from "../assets/github.svg";
-import { YoutubePlayer, EmptyPlayer } from "../components/YoutubePlayer";
+import {
+    YoutubePlayer,
+    EmptyPlayer,
+} from "../components/YoutubePlayer/YoutubePlayer";
 
 function App() {
     const [Msg, setMsg] = useState("");
