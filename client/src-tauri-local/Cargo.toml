@@ -15,7 +15,7 @@ tauri-build = { version = "1.2", features = [] }
 [dependencies]
 serde_json = "1.0.93"
 serde = { version = "1.0.152", features = ["derive"] }
-tauri = { version = "1.2.4", features = ["dialog-open", "shell-open"] }
+tauri = { version = "1.2.4", features = ["dialog-open"] }
 tokio = { version = "1.25.0", features = ["full"] }
 youtube_dl = { version = "0.8.0", features = ["tokio"] }
 reqwest = { version = "0.11", features = ["json"] }
