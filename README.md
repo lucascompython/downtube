@@ -21,6 +21,6 @@ python3 build.py -h
 
 ## TODO
 
-- [ ] Update the UI with some more information about the video
+- [X] Update the UI with some more information about the video
 - [ ] Add playlist support
 - [ ] Maybe add mobile support with Tauri 2.0
