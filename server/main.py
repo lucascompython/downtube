@@ -1,3 +1,5 @@
+import asyncio
+
 import aiofiles.os
 import uvicorn
 import yt_dlp
@@ -8,7 +10,20 @@ app = FastAPI()
 
 CACHE_SIZE = 200 # max number of video information to cache
 PORT = 6969
-video_info_cache: dict[str, dict] = {}
+last_name = ""
+
+
+def _get_info(id: str):
+    # only extract info without downloading
+    with yt_dlp.YoutubeDL({'quiet': True}) as ydl:
+        info = ydl.extract_info(
+            f'https://www.youtube.com/watch?v={id}',
+            download=False,
+        )
+    global last_name
+    last_name = info['title']
+    return ydl.sanitize_info(info)
+
 
 def _download_video(audio: bool, id: str):
     yt_opts = {
@@ -30,35 +45,36 @@ def _download_video(audio: bool, id: str):
         }]
 
     with yt_dlp.YoutubeDL(yt_opts) as ydl:
-        info = ydl.extract_info(
-            f'https://www.youtube.com/watch?v={id}',
-            download=True,
-        )
+        #info = ydl.extract_info(
+            #f'https://www.youtube.com/watch?v={id}',
+            #download=True,
+        #)
+        ydl.download([f'https://www.youtube.com/watch?v={id}'])
 
-    if id not in video_info_cache:
-        video_info_cache[id] = ydl.sanitize_info(info)
+    #if id not in video_info_cache:
+        #video_info_cache[id] = ydl.sanitize_info(info)
 
 
-async def _cleanup(id: str, audio: bool):
-    name = video_info_cache[id]['title']
-    ext = 'mp3' if audio else 'mp4'
-    await aiofiles.os.remove(f'{name}.{ext}')
-
-    if len(video_info_cache) > CACHE_SIZE:
-        video_info_cache.popitem()
-
+async def _cleanup():
+    dir = await aiofiles.os.listdir()
+    for file in dir:
+        if file.endswith(".mp3") or file.endswith(".mp4"):
+            await aiofiles.os.remove(file)
 
 @app.get("/download")
 async def download(vid_id: str, audio: bool = False):
-    _download_video(audio, vid_id)
-    ext = 'mp3' if audio else 'mp4'
-    return FileResponse(f'{video_info_cache[vid_id]["title"]}.{ext}')
+    loop = asyncio.get_event_loop()
+    func = loop.run_in_executor(None, _download_video, audio, vid_id)
+    await asyncio.gather(func, _cleanup())
+
+    ext = '.mp3' if audio else '.mp4'
+    return FileResponse(last_name + ext)
 
 
 @app.get("/info")
-async def info(vid_id: str, audio: bool = False):
-    await _cleanup(vid_id, audio)
-    return JSONResponse(video_info_cache[vid_id])
+async def info(vid_id: str):
+    info = _get_info(vid_id)
+    return JSONResponse(info)
 
 
 if __name__ == "__main__":

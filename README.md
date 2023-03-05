@@ -9,7 +9,7 @@ Didn't test anything on Mac.
 
 ## Preview
 
-![Preview](https://cdn.discordapp.com/attachments/626449728988774401/1077232713532186725/image.png)
+![Preview](https://cdn.discordapp.com/attachments/626449728988774401/1081980411577651380/image.png)
 
 ## Build It
 

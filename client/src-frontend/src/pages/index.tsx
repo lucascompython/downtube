@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { open } from "@tauri-apps/api/dialog";
 import Image from "next/image";
@@ -7,12 +7,27 @@ import {
     YoutubePlayer,
     EmptyPlayer,
 } from "../components/YoutubePlayer/YoutubePlayer";
+import ShowInfo from "../components/ShowInfo/ShowInfo";
 
 function App() {
     const [Msg, setMsg] = useState("");
     const [URL, setURL] = useState("");
     const [path, setPath] = useState("");
     const [audio, setAudio] = useState(false);
+    const [info, setInfo] = useState<any>({});
+
+    useEffect(() => {
+        const getInfo = async () => {
+            if (URL.length === 43) {
+                const info: any = await invoke("get_info", {
+                    url: URL,
+                });
+                setInfo(info);
+            }
+        };
+
+        getInfo();
+    }, [URL]);
 
     async function DownloadVid() {
         if (!path) {
@@ -26,12 +41,11 @@ function App() {
         if (Msg === "Downloading...") return;
 
         setMsg("Downloading...");
-        const info: any = await invoke("download", {
+        await invoke("download", {
             url: URL,
             path: path,
             audio: audio,
         });
-        console.log(info);
         setMsg(`Downloaded: ${info["title"]}`);
     }
 
@@ -93,6 +107,8 @@ function App() {
             </div>
 
             <p>{Msg}</p>
+
+            <ShowInfo info={info} />
 
             <div className="row">
                 <span className="logos">
