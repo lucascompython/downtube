@@ -8,7 +8,6 @@ from fastapi.responses import FileResponse, JSONResponse
 
 app = FastAPI()
 
-CACHE_SIZE = 200 # max number of video information to cache
 PORT = 6969
 last_name = ""
 
@@ -45,14 +44,8 @@ def _download_video(audio: bool, id: str):
         }]
 
     with yt_dlp.YoutubeDL(yt_opts) as ydl:
-        #info = ydl.extract_info(
-            #f'https://www.youtube.com/watch?v={id}',
-            #download=True,
-        #)
         ydl.download([f'https://www.youtube.com/watch?v={id}'])
 
-    #if id not in video_info_cache:
-        #video_info_cache[id] = ydl.sanitize_info(info)
 
 
 async def _cleanup():
