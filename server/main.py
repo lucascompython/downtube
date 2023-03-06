@@ -68,7 +68,7 @@ async def download(background_tasks: BackgroundTasks, vid_id: str, audio: bool =
 
 
 @app.get("/info")
-def info(vid_id: str):
+async def info(vid_id: str):
     info = _get_info(vid_id)
     return JSONResponse(info)
 
