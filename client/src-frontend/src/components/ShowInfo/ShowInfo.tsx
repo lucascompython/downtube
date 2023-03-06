@@ -8,7 +8,24 @@ function numberWithCommas(x: number): string {
 }
 
 const ShowInfo = ({ info }: any) => {
-    if (Object.keys(info).length === 0) return <div></div>;
+    if (Object.keys(info).length === 0)
+        return (
+            <div>
+                <div className={styles.container}>
+                    <div className={styles.containerLeft}>
+                        <h2>Likes: N/A</h2>
+                        <h2>Dislikes: N/A</h2>
+                        <h2>Subscribers: N/A</h2>
+                    </div>
+                    <div className={styles.containerRight}>
+                        <h2>Views: N/A</h2>
+                        <h2>Comments: N/A</h2>
+                        <h2>Upload date: N/A</h2>
+                    </div>
+                </div>
+            </div>
+        );
+
     let d = info["upload_date"];
     let date = d.slice(6, 8) + "/" + d.slice(4, 6) + "/" + d.slice(0, 4);
     return (

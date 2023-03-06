@@ -60,7 +60,7 @@
         "windows": [
             {
                 "fullscreen": false,
-                "height": 600,
+                "height": 930,
                 "resizable": true,
                 "title": "downtube",
                 "width": 800

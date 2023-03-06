@@ -1,4 +1,6 @@
 import styles from "./YoutubePlayer.module.css";
+import icon from "../../assets/downtube_logo.png";
+import Image from "next/image";
 
 export const YoutubePlayer = ({ vidId }: { vidId: string }) => {
     return (
@@ -20,6 +22,7 @@ export const EmptyPlayer = () => {
     return (
         <div className={styles.empty}>
             <h1>Search for a video</h1>
+            <Image src={icon} alt="Downtube Logo" height={200} width={200} />
         </div>
     );
 };

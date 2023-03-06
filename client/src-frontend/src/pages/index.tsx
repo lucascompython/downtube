@@ -23,6 +23,8 @@ function App() {
                     url: URL,
                 });
                 setInfo(info);
+            } else {
+                setInfo({});
             }
         };
 
