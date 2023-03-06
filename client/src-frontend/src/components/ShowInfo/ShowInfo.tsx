@@ -1,4 +1,12 @@
 import styles from "./ShowInfo.module.css";
+
+function numberWithCommas(x: number): string {
+    if (x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    return "N/A";
+}
+
 const ShowInfo = ({ info }: any) => {
     if (Object.keys(info).length === 0) return <div></div>;
     let d = info["upload_date"];
@@ -6,13 +14,16 @@ const ShowInfo = ({ info }: any) => {
     return (
         <div className={styles.container}>
             <div className={styles.containerLeft}>
-                <h2>Likes: {info["like_count"]}</h2>
-                <h2>Dislikes: {info["dislike_count"]}</h2>
-                <h2>Subscribers: {info["channel_follower_count"]}</h2>
+                <h2>Likes: {numberWithCommas(info["like_count"])}</h2>
+                <h2>Dislikes: {numberWithCommas(info["dislike_count"])}</h2>
+                <h2>
+                    Subscribers:{" "}
+                    {numberWithCommas(info["channel_follower_count"])}
+                </h2>
             </div>
             <div className={styles.containerRight}>
-                <h2>Views: {info["view_count"]}</h2>
-                <h2>Comments: {info["comment_count"]}</h2>
+                <h2>Views: {numberWithCommas(info["view_count"])}</h2>
+                <h2>Comments: {numberWithCommas(info["comment_count"])}</h2>
                 <h2>Upload date: {date}</h2>
             </div>
         </div>
