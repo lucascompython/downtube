@@ -1,4 +1,3 @@
-import asyncio
 import os
 
 import uvicorn
@@ -6,7 +5,6 @@ import yt_dlp
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from starlette.background import BackgroundTasks
-from starlette.concurrency import run_in_threadpool
 
 app = FastAPI()
 
@@ -56,8 +54,9 @@ def _cleanup(name: str) -> None:
     os.remove(name)
 
 @app.get("/download")
-async def download(background_tasks: BackgroundTasks, vid_id: str, audio: bool = False):
-    await run_in_threadpool(_download_video, audio, vid_id)
+def download(background_tasks: BackgroundTasks, vid_id: str, audio: bool = False):
+    #await run_in_threadpool(_download_video, audio, vid_id)
+    _download_video(audio, vid_id)
 
     ext = '.mp3' if audio else '.mp4'
 
@@ -68,7 +67,7 @@ async def download(background_tasks: BackgroundTasks, vid_id: str, audio: bool =
 
 
 @app.get("/info")
-async def info(vid_id: str):
+def info(vid_id: str):
     info = _get_info(vid_id)
     return JSONResponse(info)
 
