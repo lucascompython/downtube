@@ -1,11 +1,10 @@
+import asyncio
 import os
-from functools import wraps
 
 import uvicorn
 import yt_dlp
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
-
 from starlette.background import BackgroundTasks
 
 app = FastAPI()
@@ -57,7 +56,8 @@ def _cleanup(name: str) -> None:
 
 @app.get("/download")
 async def download(background_tasks: BackgroundTasks, vid_id: str, audio: bool = False):
-    _download_video(audio, vid_id)
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, _download_video, audio, vid_id)
 
     ext = '.mp3' if audio else '.mp4'
 
