@@ -56,7 +56,7 @@ def _cleanup(name: str) -> None:
     os.remove(name)
 
 @app.get("/download")
-def download(background_tasks: BackgroundTasks, vid_id: str, audio: bool = False):
+async def download(background_tasks: BackgroundTasks, vid_id: str, audio: bool = False):
     _download_video(audio, vid_id)
 
     ext = '.mp3' if audio else '.mp4'
