@@ -1,15 +1,19 @@
-import asyncio
+import os
+from functools import wraps
 
-import aiofiles.os
 import uvicorn
 import yt_dlp
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 
+from starlette.background import BackgroundTasks
+
 app = FastAPI()
 
 PORT = 6969
-last_name = ""
+lasts = {}
+
+
 
 
 def _get_info(id: str):
@@ -19,8 +23,8 @@ def _get_info(id: str):
             f'https://www.youtube.com/watch?v={id}',
             download=False,
         )
-    global last_name
-    last_name = info['title']
+    global lasts
+    lasts[id] = info['title']
     return ydl.sanitize_info(info)
 
 
@@ -48,24 +52,23 @@ def _download_video(audio: bool, id: str):
 
 
 
-async def _cleanup():
-    dir = await aiofiles.os.listdir()
-    for file in dir:
-        if file.endswith(".mp3") or file.endswith(".mp4"):
-            await aiofiles.os.remove(file)
+def _cleanup(name: str) -> None:
+    os.remove(name)
 
 @app.get("/download")
-async def download(vid_id: str, audio: bool = False):
-    loop = asyncio.get_event_loop()
-    func = loop.run_in_executor(None, _download_video, audio, vid_id)
-    await asyncio.gather(func, _cleanup())
+def download(background_tasks: BackgroundTasks, vid_id: str, audio: bool = False):
+    _download_video(audio, vid_id)
 
     ext = '.mp3' if audio else '.mp4'
-    return FileResponse(last_name + ext)
+
+    name = lasts[vid_id] + ext
+    
+    background_tasks.add_task(_cleanup, name)
+    return FileResponse(name)
 
 
 @app.get("/info")
-async def info(vid_id: str):
+def info(vid_id: str):
     info = _get_info(vid_id)
     return JSONResponse(info)
 
