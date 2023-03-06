@@ -22,7 +22,13 @@ export const EmptyPlayer = () => {
     return (
         <div className={styles.empty}>
             <h1>Search for a video</h1>
-            <Image src={icon} alt="Downtube Logo" height={200} width={200} />
+            <Image
+                src={icon}
+                alt="Downtube Logo"
+                height={200}
+                width={200}
+                priority={true}
+            />
         </div>
     );
 };
