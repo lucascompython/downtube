@@ -24,5 +24,6 @@ python3 build.py -h
 ## TODO
 
 - [X] Update the UI with some more information about the video
+- [ ] Fix server version information fetching, it's locked when downloading because of Mutex
 - [ ] Add playlist support
 - [ ] Maybe add mobile support with Tauri 2.0
