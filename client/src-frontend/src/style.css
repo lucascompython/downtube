@@ -95,9 +95,11 @@ button {
     color: #24c8db;
   }
 
-  input,
   button {
     color: #ffffff;
+    background-color: #0f0f0f98;
+  }
+  input {
     background-color: #0f0f0f98;
   }
 }

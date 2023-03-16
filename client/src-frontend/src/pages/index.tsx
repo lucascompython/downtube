@@ -90,6 +90,7 @@ function App() {
                         Path
                     </button>
                     <input
+                        type="search"
                         id="greet-input"
                         onChange={(e) => setURL(e.currentTarget.value)}
                         placeholder="Enter a Youtube URL..."
