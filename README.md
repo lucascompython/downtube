@@ -25,6 +25,6 @@ python3 build.py -h
 
 - [X] Update the UI with some more information about the video
 - [ ] Fix server version information fetching, it's locked when downloading because of Mutex
-- [ ] Fix local version terminal opens when downloading and fetching information
+- [ ] Fix local version terminal opens when downloading and fetching information on Windows
 - [ ] Add playlist support
 - [ ] Maybe add mobile support with Tauri 2.0
